@@ -4,7 +4,7 @@ const { canModifyQueue } = require("../util/EvobotUtil");
 
 module.exports = {
   async play(song, message) {
-    const { PRUNING, SOUNDCLOUD_CLIENT_ID, MAX_VOLUME } = require("../config.json");
+    const { PRUNING, SOUNDCLOUD_CLIENT_ID, DEFAULT_VOLUME, MAX_VOLUME } = require("../config.json");
     const queue = message.client.queue.get(message.guild.id);
 
     if (!song) {
@@ -75,7 +75,7 @@ module.exports = {
       var playingMessage = await queue.textChannel.send(`🎶 Started playing: **${song.title}** ${song.url}`);
       await playingMessage.react("⏭");
       await playingMessage.react("⏯");
-      await playingMessage.react("🔇");
+      //await playingMessage.react("🔇");
       await playingMessage.react("🔉");
       await playingMessage.react("🔊");
       await playingMessage.react("🔁");
@@ -121,8 +121,8 @@ module.exports = {
           reaction.users.remove(user).catch(console.error);
           if (!canModifyQueue(member)) return;
           if (queue.volume <= 0) {
-            queue.volume = MAX_VOLUME;
-            queue.connection.dispatcher.setVolumeLogarithmic(MAX_VOLUME / 100);
+            queue.volume = DEFAULT_VOLUME;
+            queue.connection.dispatcher.setVolumeLogarithmic(DEFAULT_VOLUME / 100);
             queue.textChannel.send(`${user} 🔊 unmuted the music!`).catch(console.error);
           } else {
             queue.volume = 0;
@@ -134,23 +134,25 @@ module.exports = {
         case "🔉":
           reaction.users.remove(user).catch(console.error);
           if (!canModifyQueue(member)) return;
-          if (queue.volume - 10 <= 0) queue.volume = 0;
-          else queue.volume = queue.volume - 10;
-          queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-          queue.textChannel
-            .send(`${user} 🔉 decreased the volume, the volume is now ${queue.volume}%`)
-            .catch(console.error);
+          if (queue.volume > DEFAULT_VOLUME) {
+            queue.volume = DEFAULT_VOLUME;
+            queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+            queue.textChannel
+              .send(`${user} 🔉 decreased the volume, the volume is now ${queue.volume}%`)
+              .catch(console.error);
+          }
           break;
 
         case "🔊":
           reaction.users.remove(user).catch(console.error);
           if (!canModifyQueue(member)) return;
-          if (queue.volume + 10 >= MAX_VOLUME) queue.volume = MAX_VOLUME;
-          else queue.volume = queue.volume + 10;
-          queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-          queue.textChannel
-            .send(`${user} 🔊 increased the volume, the volume is now ${queue.volume}%`)
-            .catch(console.error);
+          if (queue.volume < MAX_VOLUME) {
+            queue.volume = MAX_VOLUME;
+            queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+            queue.textChannel
+              .send(`${user} 🔊 increased the volume, the volume is now ${queue.volume}%`)
+              .catch(console.error);
+          }
           break;
 
         case "🔁":
