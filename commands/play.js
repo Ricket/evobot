@@ -57,12 +57,8 @@ module.exports = {
     let song = null;
 
     if (urlValid) {
-      // Trim the <url> trick
-      url = url.replace(/^</g, "");
-      url = url.replace(/>$/g, "");
-
       try {
-        songInfo = await ytdl.getInfo(url);
+        songInfo = await ytdl.getInfo(url.replace(/^</g, "").replace(/>$/g, ""));
         song = {
           title: songInfo.videoDetails.title,
           url: songInfo.videoDetails.video_url,
