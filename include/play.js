@@ -4,7 +4,7 @@ const { canModifyQueue } = require("../util/EvobotUtil");
 
 module.exports = {
   async play(song, message) {
-    const { PRUNING, SOUNDCLOUD_CLIENT_ID } = require("../config.json");
+    const { PRUNING, SOUNDCLOUD_CLIENT_ID, MAX_VOLUME } = require("../config.json");
     const queue = message.client.queue.get(message.guild.id);
 
     if (!song) {
@@ -121,8 +121,8 @@ module.exports = {
           reaction.users.remove(user).catch(console.error);
           if (!canModifyQueue(member)) return;
           if (queue.volume <= 0) {
-            queue.volume = 100;
-            queue.connection.dispatcher.setVolumeLogarithmic(100 / 100);
+            queue.volume = MAX_VOLUME;
+            queue.connection.dispatcher.setVolumeLogarithmic(MAX_VOLUME / 100);
             queue.textChannel.send(`${user} 🔊 unmuted the music!`).catch(console.error);
           } else {
             queue.volume = 0;
@@ -145,7 +145,7 @@ module.exports = {
         case "🔊":
           reaction.users.remove(user).catch(console.error);
           if (!canModifyQueue(member)) return;
-          if (queue.volume + 10 >= 100) queue.volume = 100;
+          if (queue.volume + 10 >= MAX_VOLUME) queue.volume = MAX_VOLUME;
           else queue.volume = queue.volume + 10;
           queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
           queue.textChannel
