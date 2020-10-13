@@ -30,7 +30,7 @@ module.exports = {
       return message.reply("I cannot speak in this voice channel, make sure I have the proper permissions!");
 
     const search = args.join(" ");
-    const videoPattern = /^<?(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
+    const videoPattern = /^\\w+<?(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
     const playlistPattern = /^.*(list=)([^#\&\?]*).*/gi;
     const scRegex = /^https?:\/\/(soundcloud\.com)\/(.*)$/;
     const url = args[0];
@@ -95,6 +95,7 @@ module.exports = {
           duration: songInfo.videoDetails.lengthSeconds
         };
       } catch (error) {
+        console.log(url);
         console.error(error);
         return message.reply("No video was found with a matching title").catch(console.error);
       }
