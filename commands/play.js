@@ -30,10 +30,10 @@ module.exports = {
       return message.reply("I cannot speak in this voice channel, make sure I have the proper permissions!");
 
     const search = args.join(" ");
-    const videoPattern = /^\\w+<?(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
+    const videoPattern = /^<?(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
     const playlistPattern = /^.*(list=)([^#\&\?]*).*/gi;
     const scRegex = /^https?:\/\/(soundcloud\.com)\/(.*)$/;
-    const url = args[0];
+    const url = args[0].trim();
     const urlValid = videoPattern.test(args[0]);
 
     // Start the playlist if playlist url was provided
