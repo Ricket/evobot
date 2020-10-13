@@ -30,7 +30,7 @@ module.exports = {
       return message.reply("I cannot speak in this voice channel, make sure I have the proper permissions!");
 
     const search = args.join(" ");
-    const videoPattern = /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
+    const videoPattern = /^<?(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
     const playlistPattern = /^.*(list=)([^#\&\?]*).*/gi;
     const scRegex = /^https?:\/\/(soundcloud\.com)\/(.*)$/;
     const url = args[0];
@@ -57,6 +57,10 @@ module.exports = {
     let song = null;
 
     if (urlValid) {
+      // Trim the <url> trick
+      url = url.replace(/^</g, "");
+      url = url.replace(/>$/g, "");
+
       try {
         songInfo = await ytdl.getInfo(url);
         song = {
