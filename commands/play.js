@@ -2,8 +2,10 @@ const { play } = require("../include/play");
 const { YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID, DEFAULT_VOLUME } = require("../config.json");
 const ytdl = require("ytdl-core");
 const YouTubeAPI = require("simple-youtube-api");
+const scdl = require("soundcloud-downloader").default;
+const https = require("https");
+const { YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID, DEFAULT_VOLUME } = require("../util/EvobotUtil");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
-const scdl = require("soundcloud-downloader");
 
 module.exports = {
   name: "play",
@@ -33,6 +35,7 @@ module.exports = {
     const videoPattern = /^<?(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
     const playlistPattern = /^.*(list=)([^#\&\?]*).*/gi;
     const scRegex = /^https?:\/\/(soundcloud\.com)\/(.*)$/;
+    const mobileScRegex = /^https?:\/\/(soundcloud\.app\.goo\.gl)\/(.*)$/;
     const url = args[0].trim();
     const urlValid = videoPattern.test(args[0]);
 
@@ -43,13 +46,29 @@ module.exports = {
       return message.client.commands.get("playlist").execute(message, args);
     }
 
+    if (mobileScRegex.test(url)) {
+      try {
+        https.get(url, function (res) {
+          if (res.statusCode == "302") {
+            return message.client.commands.get("play").execute(message, [res.headers.location]);
+          } else {
+            return message.reply("No content could be found at that url.").catch(console.error);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+        return message.reply(error.message).catch(console.error);
+      }
+      return message.reply("Following url redirection...").catch(console.error);
+    }
+
     const queueConstruct = {
       textChannel: message.channel,
       channel,
       connection: null,
       songs: [],
       loop: false,
-      volume: DEFAULT_VOLUME,
+      volume: DEFAULT_VOLUME || 100,
       playing: true
     };
 
@@ -77,9 +96,8 @@ module.exports = {
           duration: Math.ceil(trackInfo.duration / 1000)
         };
       } catch (error) {
-        if (error.statusCode === 404)
-          return message.reply("Could not find that Soundcloud track.").catch(console.error);
-        return message.reply("There was an error playing that Soundcloud track.").catch(console.error);
+        console.error(error);
+        return message.reply(error.message).catch(console.error);
       }
     } else {
       try {
@@ -93,7 +111,7 @@ module.exports = {
       } catch (error) {
         console.log(url);
         console.error(error);
-        return message.reply("No video was found with a matching title").catch(console.error);
+        return message.reply(error.message).catch(console.error);
       }
     }
 
