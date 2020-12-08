@@ -4,8 +4,7 @@ const { canModifyQueue, STAY_TIME } = require("../util/EvobotUtil");
 
 module.exports = {
   async play(song, message) {
-    const { PRUNING, SOUNDCLOUD_CLIENT_ID, DEFAULT_VOLUME, MAX_VOLUME } = require("../config.json");
-    const { SOUNDCLOUD_CLIENT_ID } = require("../util/EvobotUtil");
+    const { SOUNDCLOUD_CLIENT_ID, DEFAULT_VOLUME, MAX_VOLUME } = require("../util/EvobotUtil");
 
     let config;
 

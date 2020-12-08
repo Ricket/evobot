@@ -1,5 +1,5 @@
 const { canModifyQueue } = require("../util/EvobotUtil");
-const { MAX_VOLUME } = require("../config.json");
+const { MAX_VOLUME } = require("../util/EvobotUtil");
 
 module.exports = {
   name: "volume",
