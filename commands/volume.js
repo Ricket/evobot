@@ -1,4 +1,4 @@
-const { canModifyQueue, LOCALE } = require("../util/EvobotUtil");
+const { canModifyQueue, LOCALE, MAX_VOLUME } = require("../util/EvobotUtil");
 const i18n = require("i18n");
 
 i18n.setLocale(LOCALE);
@@ -16,7 +16,7 @@ module.exports = {
 
     if (!args[0]) return message.reply(i18n.__mf("volume.currentVolume", { volume: queue.volume })).catch(console.error);
     if (isNaN(args[0])) return message.reply(i18n.__("volume.errorNotNumber")).catch(console.error);
-    if (Number(args[0]) > 100 || Number(args[0]) < 0)
+    if (Number(args[0]) > MAX_VOLUME || Number(args[0]) < 0)
       return message.reply(i18n.__("volume.errorNotValid")).catch(console.error);
 
     queue.volume = args[0];

@@ -1,6 +1,6 @@
 const ytdl = require("ytdl-core-discord");
 const scdl = require("soundcloud-downloader").default;
-const { canModifyQueue, STAY_TIME, LOCALE } = require("../util/EvobotUtil");
+const { canModifyQueue, STAY_TIME, LOCALE, DEFAULT_VOLUME, MAX_VOLUME } = require("../util/EvobotUtil");
 const i18n = require("i18n");
 i18n.setLocale(LOCALE);
 
@@ -88,7 +88,7 @@ module.exports = {
       );
       await playingMessage.react("⏭");
       await playingMessage.react("⏯");
-      await playingMessage.react("🔇");
+      // await playingMessage.react("🔇");
       await playingMessage.react("🔉");
       await playingMessage.react("🔊");
       await playingMessage.react("🔁");
@@ -134,8 +134,8 @@ module.exports = {
           reaction.users.remove(user).catch(console.error);
           if (!canModifyQueue(member)) return i18n.__("common.errorNotChannel");
           if (queue.volume <= 0) {
-            queue.volume = 100;
-            queue.connection.dispatcher.setVolumeLogarithmic(100 / 100);
+            queue.volume = DEFAULT_VOLUME;
+            queue.connection.dispatcher.setVolumeLogarithmic(DEFAULT_VOLUME / 100);
             queue.textChannel.send(i18n.__mf("play.unmutedSong", { author: user })).catch(console.error);
           } else {
             queue.volume = 0;
@@ -146,26 +146,26 @@ module.exports = {
 
         case "🔉":
           reaction.users.remove(user).catch(console.error);
-          if (queue.volume == 0) return;
           if (!canModifyQueue(member)) return i18n.__("common.errorNotChannel");
-          if (queue.volume - 10 <= 0) queue.volume = 0;
-          else queue.volume = queue.volume - 10;
-          queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-          queue.textChannel
-            .send(i18n.__mf("play.decreasedVolume", { author: user, volume: queue.volume }))
-            .catch(console.error);
+          if (queue.volume > DEFAULT_VOLUME) {
+              queue.volume = DEFAULT_VOLUME;
+              queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+              queue.textChannel
+                .send(i18n.__mf("play.decreasedVolume", { author: user, volume: queue.volume }))
+                .catch(console.error);
+          }
           break;
 
         case "🔊":
           reaction.users.remove(user).catch(console.error);
-          if (queue.volume == 100) return;
           if (!canModifyQueue(member)) return i18n.__("common.errorNotChannel");
-          if (queue.volume + 10 >= 100) queue.volume = 100;
-          else queue.volume = queue.volume + 10;
-          queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-          queue.textChannel
-            .send(i18n.__mf("play.increasedVolume", { author: user, volume: queue.volume }))
-            .catch(console.error);
+          if (queue.volume < MAX_VOLUME) {
+              queue.volume = MAX_VOLUME;
+              queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+              queue.textChannel
+                .send(i18n.__mf("play.increasedVolume", { author: user, volume: queue.volume }))
+                .catch(console.error);
+          }
           break;
 
         case "🔁":
