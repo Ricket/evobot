@@ -71,7 +71,7 @@
     "loopSong": "<@{author}> 重複播放目前是 {loop}",
     "stopSong": "<@{author}> ⏹ 停止了歌曲!",
     "leaveChannel": "正在離開語音頻道...",
-    "songNotFound": "Audio Not Found"
+    "songNotFound": "沒有找到曲目"
   },
   "playlist": {
     "description": "播放 YouTube 的播放清單",
@@ -161,6 +161,6 @@
     "disabled": "**關閉**",
     "errorNotChannel": "你必須先加入語音頻道!",
     "cooldownMessage": "請等待 {time} 秒後再使用 `{name}` 指令",
-    "errorCommend": "執行指令時發生錯誤"
+    "errorCommand": "執行指令時發生錯誤"
   }
 }
