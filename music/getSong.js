@@ -8,7 +8,7 @@ const scdl = SoundCloud.create();
 
 export async function getSong({ message, args }) {
   const search = args.join(" ");
-  const url = args[0];
+  const url = args[0].trim().replace(/^<|>$/g, "");
   const urlValid = videoPattern.test(url);
 
   let songInfo = null;

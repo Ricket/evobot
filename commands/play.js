@@ -48,6 +48,7 @@ export default {
           }
         });
       } catch (error) {
+        console.log(url);
         console.error(error);
         return message.reply(error.message).catch(console.error);
       }
