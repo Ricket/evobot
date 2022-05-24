@@ -5,7 +5,7 @@ import { config } from "../utils/config.js";
 import { i18n } from "../utils/i18n.js";
 import { canModifyQueue } from "../utils/queue.js";
 
-const { PRUNING, STAY_TIME } = config;
+const { PRUNING, STAY_TIME, DEFAULT_VOLUME, MAX_VOLUME } = config;
 const scdl = SoundCloud.create();
 
 export async function processQueue(song, message) {
@@ -64,7 +64,7 @@ export async function processQueue(song, message) {
 
     await playingMessage.react("⏭");
     await playingMessage.react("⏯");
-    await playingMessage.react("🔇");
+    // await playingMessage.react("🔇");
     await playingMessage.react("🔉");
     await playingMessage.react("🔊");
     await playingMessage.react("🔁");
@@ -119,9 +119,8 @@ export async function processQueue(song, message) {
 
       case "🔉":
         reaction.users.remove(user).catch(console.error);
-        if (queue.volume == 0) return;
         if (!canModifyQueue(member, queue)) return i18n.__("common.errorNotChannel");
-        queue.volume = Math.max(queue.volume - 10, 0);
+        queue.volume = DEFAULT_VOLUME;
         queue.resource.volume.setVolumeLogarithmic(queue.volume / 100);
         queue.textChannel
           .send(i18n.__mf("play.decreasedVolume", { author: user, volume: queue.volume }))
@@ -130,9 +129,8 @@ export async function processQueue(song, message) {
 
       case "🔊":
         reaction.users.remove(user).catch(console.error);
-        if (queue.volume == 100) return;
         if (!canModifyQueue(member, queue)) return i18n.__("common.errorNotChannel");
-        queue.volume = Math.min(queue.volume + 10, 100);
+        queue.volume = MAX_VOLUME;
         queue.resource.volume.setVolumeLogarithmic(queue.volume / 100);
         queue.textChannel
           .send(i18n.__mf("play.increasedVolume", { author: user, volume: queue.volume }))

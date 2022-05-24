@@ -1,5 +1,7 @@
 import { i18n } from "../utils/i18n.js";
 import { canModifyQueue } from "../utils/queue.js";
+import { config } from "./utils/config.js";
+const { MAX_VOLUME } = config;
 
 export default {
   name: "volume",
@@ -17,7 +19,7 @@ export default {
 
     if (isNaN(args[0])) return message.reply(i18n.__("volume.errorNotNumber")).catch(console.error);
 
-    if (Number(args[0]) > 100 || Number(args[0]) < 0)
+    if (Number(args[0]) > MAX_VOLUME || Number(args[0]) < 0)
       return message.reply(i18n.__("volume.errorNotValid")).catch(console.error);
 
     queue.volume = args[0];

@@ -31,7 +31,7 @@ export default {
         .reply(i18n.__mf("play.usageReply", { prefix: message.client.prefix }))
         .catch(console.error);
 
-    const url = args[0];
+    const url = args[0].trim().replace(/^<|>$/g, "");
 
     // Start the playlist if playlist url was provided
     if (playlistPattern.test(args[0]) || (scdl.isValidUrl(url) && url.includes("/sets/"))) {
