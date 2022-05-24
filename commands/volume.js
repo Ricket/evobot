@@ -1,6 +1,6 @@
 import { i18n } from "../utils/i18n.js";
 import { canModifyQueue } from "../utils/queue.js";
-import { config } from "./utils/config.js";
+import { config } from "../utils/config.js";
 const { MAX_VOLUME } = config;
 
 export default {
